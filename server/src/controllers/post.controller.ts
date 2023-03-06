@@ -1,53 +1,92 @@
-import { Request, Response } from "express";
+import { Request, Response } from "express"
+import { createPostValidator } from "../validator/createPostValidator"
+import { postIdValidator } from "../validator/postIdValidator"
 import Post from "./../models/Post"
 
 export async function getAllPosts(req: Request, res: Response) {
-  const getAllPosts = await Post.find()
-  res.send(getAllPosts)
-}
-
-export async function getOnePost(req: Request, res: Response) {
-  const postId = req.params.postId
-  if (postId.match(/^[0-9a-fA-F]{24}$/)) {
-    try {
-      const getOnePostByID = await Post.findOne({ title: 'salut test 123'})
-      if (!getOnePostByID) {
-        res.sendStatus(404)
-      } else {
-        res.send(getOnePostByID)
-      }
-    } catch (error) {
-      console.log(error)
-    }   
-  } else {
-    res.status(404).send(`Wrong format`)
+  try {
+    const getAllPosts = await Post.find()
+    return res.send(getAllPosts) 
+  } catch (err) {
+    console.log(err);
   }
 }
 
+export async function getOnePost(req: Request, res: Response) {
+  const { error } = postIdValidator(req.params.postId)
+
+  if (error) {
+    return res.send(error.message)
+  }
+
+  try {
+    const getOnePostByID = await Post.findById(req.params.postId)
+    if (!getOnePostByID) {
+      return res.status(404).send('Post not find')
+    }
+    return res.send(getOnePostByID)
+  } catch (err) {
+    console.log(err)
+  } 
+}
+
 export async function createOnePost(req: Request, res: Response) {
-  const newPost = new Post({
-    title: req.body.title,
-    description: req.body.description
-  })
-  const createdPost = await newPost.save()
-  res.json(createdPost)
+  const { error } = createPostValidator(req.body)
+
+  if (error) {
+    return res.send(error.message)
+  }
+
+  try {
+    const newPost = new Post({
+      title: req.body.title,
+      description: req.body.description,
+      creationDate: Date(),
+      author: req.body.author
+    })
+    const createdPost = await newPost.save()
+    return res.json(createdPost)
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 export async function deleteOnePost(req: Request, res: Response) {
-  const postId = req.params.postId
-  const deletePost = await Post.findByIdAndDelete(postId)
-  res.send(deletePost)
+  const { error } = postIdValidator(req.params.postId)
+
+  if (error) {
+    return res.send(error.message)
+  }
+
+  try {
+    const deletePost = await Post.findByIdAndDelete(req.params.postId)
+    return res.send(deletePost) 
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 export async function changeOnePost(req: Request, res: Response) {
-  const postId = req.params.postId
-  const changePost = await Post.findByIdAndUpdate(postId, 
-  { 
-    $set: 
+  const { error } = createPostValidator(req.body)
+  const { error: errorId} = postIdValidator(req.params.postId)
+  
+  if (error || errorId) {
+    return res.send(
+      `${error ? error?.message : ""} ${errorId ? errorId?.message : ""}`
+    )
+  }
+
+  try {
+    const changePost = await Post.findByIdAndUpdate(req.params.postId, 
     { 
-      title: req.body.title,
-      description: req.body.description
-    }
-  })
-  res.send(changePost)
+      $set: 
+      { 
+        title: req.body.title,
+        description: req.body.description
+      }
+    })
+    res.send(changePost)
+  } catch (err) {
+    console.log(err)
+  }
 }
