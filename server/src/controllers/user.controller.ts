@@ -53,7 +53,7 @@ export async function login(req: Request, res: Response) {
     const isLoginValid = bcrypt.compareSync(password, getUserInfo.password)
 
     if (!isLoginValid) {
-      return res.sendStatus(401)
+      return res.status(401).send("Mot de passe invalide")
     }
 
     const expIn30days = Date.now() + 1000 * 60 * 60 * 24 * 30
@@ -87,5 +87,5 @@ export async function logout(req: Request, res: Response) {
 // Using for check if middleware requireAuth working
 export async function checkAuth(req: Request, res: Response) {
   console.log('Inside checkAuth fonc');
-  res.status(200).send(req.body)
+  res.status(200).send(req.body.username)
 }
