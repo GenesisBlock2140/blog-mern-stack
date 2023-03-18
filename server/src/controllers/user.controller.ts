@@ -26,9 +26,10 @@ export async function signUp(req: Request, res: Response) {
       password: hashedPassword
     })
     const createdUser = await newUser.save()
-    return res.json(createdUser)
+    return res.json(createdUser.username)
   } catch (err) {
     console.log(err)
+    return res.status(401).send("L'utilisateur existe déjà")
   }
 }
 
