@@ -12,6 +12,7 @@ export const PostContext = createContext<IPostContext>({
 export const PostProvider = ({children}: {children: ReactNode}) => {
 
   const [blogPosts, setBlogPosts] = useState([])
+  const [isFetch, setIsFetch] = useState<boolean>(false)
   
   useEffect(() => {
     const fetchData = async () => {
@@ -22,14 +23,20 @@ export const PostProvider = ({children}: {children: ReactNode}) => {
       } catch (error) {
         console.log(error)
       }
+      setIsFetch(true)
     }
     fetchData()
   },[])
 
+  // Wait data fetch before render
+  if (isFetch) {
   return (
     <PostContext.Provider value={{blogPosts}}>
       {children}
     </PostContext.Provider>
-  )
+  ) 
+  }
+
+  return null
 
 }

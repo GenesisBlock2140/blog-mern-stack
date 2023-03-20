@@ -8,6 +8,8 @@ export const usePost = (postTitle?:string) => {
   if (!postTitle) return blogPosts
 
   const filterBlogPosts = [...blogPosts.filter(post => post.title === postTitle)]
-  if (filterBlogPosts.length === 1) return filterBlogPosts
+  if (filterBlogPosts.length > 0) return filterBlogPosts
+
+  return []
 
 }

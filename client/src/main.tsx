@@ -6,6 +6,7 @@ import './index.css'
 import { Blog } from './pages/Blog'
 import { Register } from './pages/Register'
 import { Login } from './pages/Login'
+import { Error404 } from './pages/Error404'
 
 import {
   createBrowserRouter,
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "blog/:blogTitle",
     element: <Blog />
+  },
+  {
+    path: "*",
+    element: <Error404 />
   }
 ]);
 
