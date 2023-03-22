@@ -15,6 +15,8 @@ import {
 } from "./controllers/post.controller";
 import { checkAuth, login, logout, signUp } from "./controllers/user.controller";
 import { requireAuth } from "./middleware/requireAuth";
+import { requireAdmin } from "./middleware/requireAdmin";
+import { loginLimiter } from "./middleware/loginLimiter";
 
 const app: Express = express();
 const PORT = process.env.PORT;
@@ -35,17 +37,17 @@ app.get("/posts", getAllPosts);
 
 app.get("/posts/:postId", getOnePost);
 
-app.post("/posts", createOnePost);
+app.post("/posts", requireAuth, requireAdmin, createOnePost);
 
-app.delete("/posts/:postId", deleteOnePost);
+app.delete("/posts/:postId", requireAuth, requireAdmin, deleteOnePost);
 
-app.put("/posts/:postId", changeOnePost);
+app.put("/posts/:postId", requireAuth, requireAdmin, changeOnePost);
 
 // User Routes
 
 app.post("/signup", signUp);
 
-app.post("/login", login);
+app.post("/login", loginLimiter, login);
 
 app.post("/logout", requireAuth, logout);
 

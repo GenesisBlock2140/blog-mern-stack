@@ -12,7 +12,8 @@ interface IPost {
 const PostSchema = new Schema<IPost>({
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   description: {
     type: String,

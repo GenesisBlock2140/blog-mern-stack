@@ -4,6 +4,7 @@ interface IUser {
   email: string;
   username: string;
   password: string;
+  role: string
 }
 
 const Schema = mongoose.Schema
@@ -23,6 +24,11 @@ const UserSchema = new Schema<IUser>({
   password: {
     type: String,
     required: true
+  },
+  role: {
+    type: String,
+    required: true,
+    default: "utilisateur"
   }
 })
 

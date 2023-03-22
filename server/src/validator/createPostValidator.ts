@@ -4,12 +4,14 @@ interface postData {
   title: string;
   description: string;
   author: string;
+  username: string;
 }
 
 const createPostSchema = Joi.object({
   title: Joi.string().min(10).max(120).required(),
   description: Joi.string().required(),
-  author: Joi.string().required()
+  author: Joi.string().required(),
+  username: Joi.string().required()
 })
 
 export const createPostValidator = (postData:postData) => {
