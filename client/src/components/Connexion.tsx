@@ -1,11 +1,12 @@
 import { useContext, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { object, string } from 'yup';
 import { AuthContext } from "../context/AuthProvider";
 import { postLogin } from "../utils/Request";
-import { MsgErrorForm } from "./MsgErrorForm";
+import { Alert } from "./Alert";
 
+import { loginSchema } from "../schema/userSchema";
 import { InputForm } from "./UI/InputForm";
+import { msgType } from "./Alert";
 
 export const Connexion = () => {
 
@@ -14,24 +15,22 @@ export const Connexion = () => {
 
   const [msgError, setMsgError] = useState<string>("")
 
-  const { auth, setAuth } = useContext(AuthContext)
-  console.log(auth);
-  
-  const loginSchema = object({
-    username: string().required().min(4),
-    password: string().required().min(6).max(32)
-  });
+  const { setAuth } = useContext(AuthContext)
 
   const handleSubmit = async (e:React.SyntheticEvent) => {
     e.preventDefault()
     try {
-      const valid = await loginSchema.validate({
+      await loginSchema.validate({
         username: usernameInput.current?.value,
         password: passwordInput.current?.value
       })
-      postLogin(usernameInput.current?.value || "",passwordInput.current?.value || "", setAuth)
-      console.log("valid");
-    } catch (err) {
+      const tryLogin = await postLogin(usernameInput.current?.value || "",passwordInput.current?.value || "", setAuth)
+      if (tryLogin) {
+        console.log("Connexion OK");
+      } else {
+        setMsgError("Mot de passe incorrect")
+      }
+    } catch (err:any) {
       console.log(err)
       setMsgError(err.message)
     }
@@ -40,7 +39,7 @@ export const Connexion = () => {
 
   return (
     <>
-      <MsgErrorForm msgError={msgError} />
+      <Alert alertMsg={msgError} type={msgType.danger} />
       <div className="max-w-[450px] mx-auto border-2 border-[##cae6ff] rounded-md p-4 my-4">
         <form onSubmit={(e) => handleSubmit(e)}>
           <p className="font-light text-[30px] text-[#666] text-center">ESPACE DE <span className="text-[#1d9bf0]">CONNEXION</span></p>

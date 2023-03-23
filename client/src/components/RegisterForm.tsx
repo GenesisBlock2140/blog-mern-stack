@@ -1,24 +1,46 @@
 import { useState, useRef } from "react"
 import { Link } from "react-router-dom"
-import { MsgErrorForm } from "./MsgErrorForm"
+import { Alert } from "./Alert"
+import { postSignUp } from "../utils/Request";
 
+import { signupSchema } from "../schema/userSchema";
 import { InputForm } from "./UI/InputForm"
+import { msgType } from "./Alert";
 
 export const RegisterForm = () => {
 
   const [msgError, setMsgError] = useState<string>("")
+  const [registerSuccess, setRegisterSuccess] = useState<boolean>(false)
 
   const usernameInput = useRef<HTMLInputElement>(null)
   const passwordInput = useRef<HTMLInputElement>(null)
   const emailInput = useRef<HTMLInputElement>(null)
 
-  const handleSubmit = (e:React.SyntheticEvent) => {
+  const handleSubmit = async (e:React.SyntheticEvent) => {
     e.preventDefault()
+    try {
+      await signupSchema.validate({
+        username: usernameInput.current?.value,
+        password: passwordInput.current?.value,
+        email: emailInput.current?.value
+      })
+      const tryRegister = await postSignUp(usernameInput.current?.value || "",passwordInput.current?.value || "", emailInput.current?.value || "")  
+      if (tryRegister) {
+        setRegisterSuccess(true)
+        setMsgError("Bravo, vous pouvez maintenant vous connecter")
+      } else {
+        setMsgError("L'utilisateur existe déjà")
+      }
+    } catch (err:any) {
+      console.log(err)
+      setMsgError(err.message)
+    }
+    
   }
 
   return (
     <>
-      <MsgErrorForm msgError={msgError} />
+      <Alert alertMsg={msgError} type={registerSuccess ? msgType.success : msgType.danger} />
       <div className="max-w-[450px] mx-auto border-2 border-[##cae6ff] rounded-md p-4 my-4">
         <form onSubmit={(e) => handleSubmit(e)}>
           <p className="font-light text-[30px] text-[#666] text-center">ESPACE D'<span className="text-[#1d9bf0]">INSCRIPTION</span></p>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { AuthContext } from "../context/AuthProvider"
 import { svgUser } from "../assets/svg/svgUser"
 import { svgArrowClick } from "../assets/svg/svgArrowClick"
+import { SvgCog } from "../assets/svg/svgCog"
 
 export const Header = () => {
 
@@ -15,8 +16,10 @@ export const Header = () => {
             <Link to={"/"} className="text-[25px]">Thisistech</Link>
             {auth != "" 
               ? 
-                <p className="flex items-center gap-2">
-                {svgUser}{auth} | <span className="cursor-pointer" onClick={logoutUser}>Déconnexion</span></p> 
+                <div className="flex items-center gap-2">
+                  <Link to={"/panel"}>{SvgCog}</Link>
+                  {svgUser}{auth} | <span className="cursor-pointer" onClick={logoutUser}>Déconnexion</span>
+                </div> 
               : 
               <div className="flex items-center">
                 <Link to={"/login"} className="mr-2"> Connexion </Link>
