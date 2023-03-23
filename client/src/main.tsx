@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from './context/AuthProvider'
 import { PostProvider } from './context/PostProvider'
+import { Admin } from './pages/Admin'
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <Error404 />
+  },
+  {
+    path: "panel",
+    element: <Admin />
   }
 ]);
 
