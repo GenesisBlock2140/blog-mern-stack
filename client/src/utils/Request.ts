@@ -85,3 +85,24 @@ export const postChangePost = async (postContent:string, postTitle:string, postA
 
   return false
 }
+
+export const postCreatePost = async (postContent:string, postTitle:string, postAuthor:string) => {
+
+  const data = await fetch("http://localhost:5000/posts/", {
+    method: "POST",
+    mode: "cors",
+    headers: { 'Access-Control-Allow-Origin': 'http://localhost:5173/', 'Content-Type': 'application/json' },
+    credentials: "include",
+    body: JSON.stringify({
+      title: postTitle,
+      description: postContent,
+      author: postAuthor
+    })
+  })
+
+  if (data.status === 200) {
+    return true
+  }
+
+  return false
+}

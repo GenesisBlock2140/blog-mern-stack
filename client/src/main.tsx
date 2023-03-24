@@ -15,6 +15,7 @@ import {
 import { AuthProvider } from './context/AuthProvider'
 import { PostProvider } from './context/PostProvider'
 import { Admin } from './pages/Admin'
+import { NewPost } from './pages/NewPost'
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "panel",
     element: <Admin />
+  },
+  {
+    path: "panel/nouveau",
+    element: <NewPost />
   }
 ]);
 
