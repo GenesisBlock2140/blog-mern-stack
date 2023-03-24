@@ -13,13 +13,16 @@ Front-end ( Typescript ) :
 * React Router Dom
 * Tailwind CSS
 * React-markdown
+
 Back-end ( Typescript ) :
 * Node JS
 * Express JS
 * MongoDB
+
 Test unitaires:
 * Jest
 * Supertest
+
 Validation des donneés :
 * Joi ( Back-end )
 * Yup ( Front-end )
